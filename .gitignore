@@ -1,0 +1,16 @@
+tags
+TAGS
+*.blend1
+*.blend1
+*.mtl
+*.obj
+*.pdb
+*.dll
+*.exe
+*.ilk
+*.out
+SDL2
+*.swp
+*~
+.vs
+paint
