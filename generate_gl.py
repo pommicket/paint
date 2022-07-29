@@ -70,6 +70,7 @@ GLenum.glGetError.void
 300.void.glFramebufferRenderbuffer.GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer
 300.void.glBindFramebuffer.GLenum target, GLuint framebuffer
 320.void.glTexImage2DMultisample.GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations
+void.glReadPixels.GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid * data
 '''
 
 functions = []

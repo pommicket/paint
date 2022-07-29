@@ -1,9 +1,6 @@
 tags
 TAGS
-*.blend1
-*.blend1
-*.mtl
-*.obj
+*.png
 *.pdb
 *.dll
 *.exe

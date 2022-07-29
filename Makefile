@@ -1,4 +1,4 @@
-CFLAGS_COMMON=-Wall -Wshadow -Wno-unused-function -Wconversion -Wimplicit-fallthrough -I/usr/include/SDL2
+CFLAGS_COMMON=-Wall -Wshadow -Wno-unused-function -Wimplicit-fallthrough -I/usr/include/SDL2
 paint: *.[ch] gl.c
 	$(CC) -O0 -g -DDEBUG=1 $(CFLAGS_COMMON) -o paint main.c -lSDL2 -lm
 debug-release: *.[ch] gl.c

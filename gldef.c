@@ -320,6 +320,7 @@ typedef void GLFramebufferTexture2D(GLenum target, GLenum attachment, GLenum tex
 typedef void GLFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
 typedef void GLBindFramebuffer(GLenum target, GLuint framebuffer);
 typedef void GLTexImage2DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+typedef void GLReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid * data);
 
 static GLViewport *glViewport;
 static GLClear *glClear;
@@ -387,6 +388,7 @@ static GLFramebufferTexture2D *glFramebufferTexture2D;
 static GLFramebufferRenderbuffer *glFramebufferRenderbuffer;
 static GLBindFramebuffer *glBindFramebuffer;
 static GLTexImage2DMultisample *glTexImage2DMultisample;
+static GLReadPixels *glReadPixels;
 
 void gl_get_procs(int version_major, int version_minor) {
 	int version = version_major * 100 + version_minor;
@@ -456,5 +458,6 @@ void gl_get_procs(int version_major, int version_minor) {
 	if (version >= 300) glFramebufferRenderbuffer = (GLFramebufferRenderbuffer *)SDL_GL_GetProcAddress("glFramebufferRenderbuffer");
 	if (version >= 300) glBindFramebuffer = (GLBindFramebuffer *)SDL_GL_GetProcAddress("glBindFramebuffer");
 	if (version >= 320) glTexImage2DMultisample = (GLTexImage2DMultisample *)SDL_GL_GetProcAddress("glTexImage2DMultisample");
+	glReadPixels = (GLReadPixels *)SDL_GL_GetProcAddress("glReadPixels");
 }
 
