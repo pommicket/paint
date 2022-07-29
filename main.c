@@ -1,10 +1,23 @@
 /*
-  a very simple painting program
+  a very simple painting program made in a day
   this program is released into the public domain
   
   press q/e to change pen size, w/s to change pen hue
-  automatically saves a new image when you close the window
+  press f or F11 to toggle fullscreen
+  automatically saves a new high-resolution image when you close the window
+              (this may take a few seconds)
   you can load an image by providing a command line argument
+    or dragging an image onto the executable on windows
+  
+  
+  compile with `make release` on linux or windows
+  on linux you'll need libsdl2-dev
+  on windows you'll need Visual Studio
+    and the SDL VC development libraries here:
+     https://libsdl.org/download-2.0.php
+    extract the zip and move SDL2-2.0.X to this directory & rename it to SDL2
+    also copy SDL2\lib\x64\SDL2.dll to this directory
+  
 */
 #ifdef DEBUG
 #undef DEBUG
@@ -34,6 +47,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <float.h>
+#include <time.h>
 
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image_resize.h"
@@ -90,11 +104,21 @@ int WinMain(
   HINSTANCE hPrevInstance,
   LPSTR     lpCmdLine,
   int       nShowCmd
-)
+) {
+	int argc = 0;
+	LPWSTR* wide_argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+	char** argv = calloc(argc, sizeof *argv);
+	for (int i = 0; i < argc; i++) {
+	LPWSTR wide_arg = wide_argv[i];
+	int len = (int)wcslen(wide_arg);
+	argv[i] = calloc(1, len + 1);
+	for (int j = 0; j <= len; j++)
+	argv[i][j] = (char)wide_arg[j];
+	}
+	LocalFree(wide_argv);
 #else
-int main(int argc, char **argv)
+int main(int argc, char **argv) {
 #endif
-{
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_AUDIO);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGTERM, SIG_DFL);
@@ -220,8 +244,9 @@ int main(int argc, char **argv)
 	float pen_size = 20;
 	float pen_hue = 0;
 	int prev_mouse_x = INT_MAX, prev_mouse_y = INT_MAX;
-	
+	bool fullscreen = false;
 	double total_dt = 0;
+	
 	while (1) {
 		SDL_Event event = {0};
 		
@@ -244,6 +269,9 @@ int main(int argc, char **argv)
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:
 					goto quit;
+				case SDLK_f:
+				case SDLK_F11:
+					fullscreen = !fullscreen;
 				}
 				break;
 			}
@@ -266,6 +294,7 @@ int main(int argc, char **argv)
 			pen_size = clampf(pen_size, 0.1f, 5000);
 		}
 		
+		SDL_SetWindowFullscreen(sdl_window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 		SDL_GetWindowSize(sdl_window, &window_width, &window_height);
 		window_widthf = (float)window_width;
 		window_heightf = (float)window_height;
@@ -342,7 +371,7 @@ int main(int argc, char **argv)
 	char filename[64] = {0};
 	time_t curr_time = time(NULL);
 	struct tm *tm = localtime(&curr_time);
-	strftime(filename, sizeof filename - 1, "%Y-%m-%d-%H:%M:%S.png", tm);
+	strftime(filename, sizeof filename - 1, "%Y-%m-%d-%H-%M-%S.png", tm);
 	stbi_write_png(filename, width, height, 4, image, width * 4);
 	
 	SDL_GL_DeleteContext(glctx);
